@@ -1,6 +1,7 @@
 package com.example.tutorialcounterapp.counter_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -71,7 +73,7 @@ fun CounterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp, vertical = 15.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ){
             IconButton(onClick = { onDeleteClicked() }) {
                 Icon(
@@ -103,10 +105,12 @@ fun CounterScreen(
                 modifier = Modifier.weight(1f)
             ){
                 var text by remember { mutableStateOf("") }
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier.padding(20.dp)
+                Text(
+                    text = text,
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .size(56.dp)
+                        .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
                 )
             }
 
