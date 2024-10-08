@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,13 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tutorialcounterapp.R
+import com.example.tutorialcounterapp.ui.theme.TutorialCounterAppTheme
 
 @Composable
 fun CounterScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSettingClicked: () -> Unit = {},
+    onDeleteClicked: () -> Unit = {},
+    onDecrementClicked: () -> Unit = {},
+    onIncrementClicked: () -> Unit = {},
+    onAddClicked: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -43,11 +49,13 @@ fun CounterScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_settings_24),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp)
-            )
+            IconButton(onClick = { onSettingClicked() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_settings_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
 
             Text(
                 text = "Title",
@@ -65,10 +73,12 @@ fun CounterScreen(
                 .padding(horizontal = 10.dp, vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Icon(
-                painter = painterResource(id = R.drawable.outline_cancel_24),
-                contentDescription = null
-            )
+            IconButton(onClick = { onDeleteClicked() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_cancel_24),
+                    contentDescription = null
+                )
+            }
 
             Box(
                 modifier = Modifier.weight(2f)
@@ -81,11 +91,13 @@ fun CounterScreen(
                 )
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.outline_arrow_drop_down_24),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp)
-            )
+            IconButton(onClick = { onDecrementClicked() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_arrow_drop_down_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
 
             Box(
                 modifier = Modifier.weight(1f)
@@ -98,16 +110,29 @@ fun CounterScreen(
                 )
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.outline_arrow_drop_up_24),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp)
-            )
+            IconButton(onClick = { onIncrementClicked() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_arrow_drop_up_24),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
         }
 
-        Icon(
-            painter = painterResource(id = R.drawable.outline_add_circle_outline_24),
-            contentDescription = null,
-            modifier = Modifier.size(72.dp))
+        IconButton(onClick = { onAddClicked() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.outline_add_circle_outline_24),
+                contentDescription = null,
+                modifier = Modifier.size(72.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CounterScreenPreview() {
+    TutorialCounterAppTheme {
+        CounterScreen()
     }
 }
