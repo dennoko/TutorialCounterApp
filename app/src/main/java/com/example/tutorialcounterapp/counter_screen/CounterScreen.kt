@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -91,9 +92,12 @@ fun CounterScreen(
             Box(
                 modifier = Modifier.weight(2f)
             ){
-                var text by remember { mutableStateOf("") }
+                var text by remember { mutableStateOf(savedItems.itemNameSet.firstOrNull() ?:"") }
                 var itemSet by remember {
                     mutableStateOf(savedItems.itemNameSet)
+                }
+                LaunchedEffect(savedItems.itemNameSet) {
+                    text = savedItems.itemNameSet.firstOrNull() ?: ""
                 }
                 OutlinedTextField(
                     value = text,
