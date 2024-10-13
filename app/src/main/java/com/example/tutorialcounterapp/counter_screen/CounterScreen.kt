@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tutorialcounterapp.R
 import com.example.tutorialcounterapp.ui.theme.TutorialCounterAppTheme
@@ -120,7 +119,7 @@ fun CounterScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ){
-                var text by remember { mutableStateOf("") }
+                val text by remember { mutableStateOf("") }
                 Text(
                     text = text,
                     modifier = Modifier
