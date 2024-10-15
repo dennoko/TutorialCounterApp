@@ -25,12 +25,19 @@ class UserRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-
-
     suspend fun saveCountValue(itemName: String, countValue: Int){
         val COUNTVALUE = intPreferencesKey(itemName)
         dataStore.edit { preferences ->
             preferences[COUNTVALUE] = countValue
         }
+    }
+
+    suspend fun loadCountValue(itemName: String): Flow<Int> {
+        val COUNTVALUE = intPreferencesKey(itemName)
+        val countValue: Flow<Int> =
+            dataStore.data.map { preferences ->
+                preferences[COUNTVALUE] ?:0
+            }
+        return countValue
     }
 }
