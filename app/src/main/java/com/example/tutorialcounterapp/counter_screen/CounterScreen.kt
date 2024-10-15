@@ -15,6 +15,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,18 +28,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tutorialcounterapp.R
 import com.example.tutorialcounterapp.ui.theme.TutorialCounterAppTheme
 
 @Composable
 fun CounterScreen(
     modifier: Modifier = Modifier,
+    myAppViewModel: CounterScreenViewModel = viewModel(factory = CounterScreenViewModel.Factory),
     onSettingClicked: () -> Unit = {},
     onDeleteClicked: () -> Unit = {},
     onDecrementClicked: () -> Unit = {},
     onIncrementClicked: () -> Unit = {},
     onAddClicked: () -> Unit = {},
 ) {
+    val savedItems by myAppViewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .then(modifier),
@@ -85,10 +91,19 @@ fun CounterScreen(
             Box(
                 modifier = Modifier.weight(2f)
             ){
-                var text by remember { mutableStateOf("") }
+                var text by remember { mutableStateOf(savedItems.itemNameSet.firstOrNull() ?:"") }
+                var itemSet by remember {
+                    mutableStateOf(savedItems.itemNameSet)
+                }
+                LaunchedEffect(savedItems.itemNameSet) {
+                    text = savedItems.itemNameSet.firstOrNull() ?: ""
+                }
                 OutlinedTextField(
                     value = text,
-                    onValueChange = { text = it },
+                    onValueChange = {
+                        text = it
+                        itemSet = setOf(it)
+                        myAppViewModel.saveItems(itemSet)},
                     modifier = Modifier.padding(20.dp)
                 )
             }
@@ -104,7 +119,7 @@ fun CounterScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ){
-                var text by remember { mutableStateOf("") }
+                val text by remember { mutableStateOf("") }
                 Text(
                     text = text,
                     modifier = Modifier
