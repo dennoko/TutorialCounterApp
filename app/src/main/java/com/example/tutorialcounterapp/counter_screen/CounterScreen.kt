@@ -1,5 +1,6 @@
 package com.example.tutorialcounterapp.counter_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -23,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,14 +39,15 @@ import com.example.tutorialcounterapp.ui.theme.TutorialCounterAppTheme
 @Composable
 fun CounterScreen(
     modifier: Modifier = Modifier,
-    myAppViewModel: CounterScreenViewModel = viewModel(factory = CounterScreenViewModel.Factory),
+    uiState: CounterScreenUiState = CounterScreenUiState(),
     onSettingClicked: () -> Unit = {},
     onDeleteClicked: () -> Unit = {},
+    onSaveClicked: (String, String) -> Unit = { _, _ -> },
     onDecrementClicked: () -> Unit = {},
     onIncrementClicked: () -> Unit = {},
     onAddClicked: () -> Unit = {},
 ) {
-    val savedItems by myAppViewModel.uiState.collectAsState()
+    val savedItems = uiState.itemNameSet
 
     Column(
         modifier = Modifier
@@ -81,6 +86,8 @@ fun CounterScreen(
                 .padding(horizontal = 10.dp, vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ){
+            var itemName by remember { mutableStateOf(savedItems.firstOrNull() ?:"") }
+            val previousItemName by remember { mutableStateOf(itemName) }
             IconButton(onClick = { onDeleteClicked() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_cancel_24),
@@ -91,21 +98,24 @@ fun CounterScreen(
             Box(
                 modifier = Modifier.weight(2f)
             ){
-                var text by remember { mutableStateOf(savedItems.itemNameSet.firstOrNull() ?:"") }
-                var itemSet by remember {
-                    mutableStateOf(savedItems.itemNameSet)
-                }
-                LaunchedEffect(savedItems.itemNameSet) {
-                    text = savedItems.itemNameSet.firstOrNull() ?: ""
+                LaunchedEffect(savedItems) {
+                    itemName = savedItems.firstOrNull() ?: ""
                 }
                 OutlinedTextField(
-                    value = text,
+                    value = itemName,
                     onValueChange = {
-                        text = it
-                        itemSet = setOf(it)
-                        myAppViewModel.saveItems(itemSet)},
+                        itemName = it
+                    },
                     modifier = Modifier.padding(20.dp)
                 )
+            }
+
+            // TODO: SAVE ボタンの追加。previousItemName と itemName の値が異なる場合に changeTextFieldValue を呼び出す
+            IconButton(onClick = { onSaveClicked(previousItemName, itemName); Log.d("CounterScreenTest", "pre: ${previousItemName} new: ${itemName}") }) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp))
             }
 
             IconButton(onClick = { onDecrementClicked() }) {

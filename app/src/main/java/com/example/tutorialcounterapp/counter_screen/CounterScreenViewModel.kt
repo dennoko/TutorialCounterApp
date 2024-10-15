@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.tutorialcounterapp.MyApplication
 import com.example.tutorialcounterapp.data.UserRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +24,6 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = CounterScreenUiState()
         )
-
-    // TODO: fun saveItems(items: Set<String>) の実装(アイテム名のリストを保存する)
 
     fun saveItems(items: Set<String>){
         viewModelScope.launch {
@@ -45,4 +44,8 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
 
 
     // TODO: fun loadCountValue(itemName: String): Int の実装(アイテム名をキーとして保存されたカウント値を取得する)
+
+
+    // TODO: fun renameItem(previousItemName: String, newItemName: String) の実装(アイテム名を変更する)
+    // dennoko 担当
 }

@@ -12,6 +12,7 @@ class UserRepository(private val dataStore: DataStore<Preferences>) {
     private object PreferenceKeys {
         val ITEMS = stringSetPreferencesKey("items")
     }
+
     val currentItems: Flow<Set<String>> =
         dataStore.data.map { preferences ->
             preferences[PreferenceKeys.ITEMS] ?: emptySet()
