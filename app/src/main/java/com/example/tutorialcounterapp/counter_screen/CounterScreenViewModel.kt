@@ -43,6 +43,11 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
 
     // TODO: fun saveCountValue(itemName: String, countValue: Int) の実装(アイテム名をキーとしてカウント値を保存する)
 
+    fun saveCountValue(itemName: String, countValue: Int){
+        viewModelScope.launch {
+            userRepository.saveCountValue(itemName,countValue)
+        }
+    }
 
     // TODO: fun loadCountValue(itemName: String): Int の実装(アイテム名をキーとして保存されたカウント値を取得する)
 }
