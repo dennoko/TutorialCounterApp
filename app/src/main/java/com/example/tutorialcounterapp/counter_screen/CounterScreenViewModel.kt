@@ -68,5 +68,10 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
         }
     }
 
+    fun addItem(itemName: String) {
+        val newItemSet = uiState.value.itemNameSet + itemName
+        saveItems(newItemSet)
+    }
+
 
 }
