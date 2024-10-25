@@ -73,5 +73,10 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
         saveItems(newItemSet)
     }
 
+    fun deleteItem(itemName: String){
+        val newItemSet = uiState.value.itemNameSet
+        saveItems(newItemSet)
+    }
+
 
 }
