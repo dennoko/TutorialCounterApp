@@ -61,4 +61,12 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
         }
         return countValue
     }
+
+    fun renameItem(itemName: String, newItemName: String){
+        viewModelScope.launch {
+            userRepository.renameItem(itemName, newItemName)
+        }
+    }
+
+
 }

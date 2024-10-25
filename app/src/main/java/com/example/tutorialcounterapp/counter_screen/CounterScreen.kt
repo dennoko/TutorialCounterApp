@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -43,6 +45,11 @@ fun CounterScreen(
     onAddClicked: () -> Unit = {},
 ) {
     val savedItems by myAppViewModel.uiState.collectAsState()
+    var itemName = ""
+    var newItemName = ""
+    var itemSet by remember {
+        mutableStateOf(savedItems.itemNameSet)
+    }
 
     Column(
         modifier = Modifier
@@ -88,25 +95,11 @@ fun CounterScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier.weight(2f)
-            ){
-                var text by remember { mutableStateOf(savedItems.itemNameSet.firstOrNull() ?:"") }
-                var itemSet by remember {
-                    mutableStateOf(savedItems.itemNameSet)
-                }
-                LaunchedEffect(savedItems.itemNameSet) {
-                    text = savedItems.itemNameSet.firstOrNull() ?: ""
-                }
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = {
-                        text = it
-                        itemSet = setOf(it)
-                        myAppViewModel.saveItems(itemSet)},
-                    modifier = Modifier.padding(20.dp)
-                )
-            }
+            Text(
+                text = "",
+                fontSize = 28.sp,
+                modifier = Modifier.weight(1f)
+            )
 
             IconButton(onClick = { onDecrementClicked() }) {
                 Icon(
@@ -116,9 +109,7 @@ fun CounterScreen(
                 )
             }
 
-            Box(
-                modifier = Modifier.weight(1f)
-            ){
+            Box{
                 val text by remember { mutableStateOf("") }
                 Text(
                     text = text,
@@ -138,12 +129,25 @@ fun CounterScreen(
             }
         }
 
-        IconButton(onClick = { onAddClicked() }) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_add_circle_outline_24),
-                contentDescription = null,
-                modifier = Modifier.size(72.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            OutlinedTextField(
+                value = "",
+                onValueChange = {
+
+                },
+                modifier = Modifier.weight(1f)
             )
+            
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(onClick = { onAddClicked() }) {
+                Text("Add")
+            }
         }
     }
 }
