@@ -69,13 +69,19 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
     }
 
     fun addItem(itemName: String) {
-        val newItemSet = uiState.value.itemNameSet + itemName
-        saveItems(newItemSet)
+        viewModelScope.launch {
+            if(itemName != "") {
+                val newItemSet = uiState.value.itemNameSet + itemName
+                saveItems(newItemSet)
+            }
+        }
     }
 
     fun deleteItem(itemName: String){
-        val newItemSet = uiState.value.itemNameSet
-        saveItems(newItemSet)
+        viewModelScope.launch {
+            val newItemSet = uiState.value.itemNameSet - itemName
+            saveItems(newItemSet)
+        }
     }
 
 

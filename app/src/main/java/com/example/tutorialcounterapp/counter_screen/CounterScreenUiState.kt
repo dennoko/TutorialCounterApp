@@ -8,7 +8,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.tutorialcounterapp.data.UserRepository
 
 data class CounterScreenUiState(
-    val itemNameSet: Set<String> = emptySet(),
+    var itemNameSet: Set<String> = emptySet(),
 )
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
