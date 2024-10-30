@@ -1,7 +1,6 @@
 package com.example.tutorialcounterapp.counter_screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 import com.example.tutorialcounterapp.R
 import com.example.tutorialcounterapp.ui.theme.TutorialCounterAppTheme
 
@@ -47,10 +45,6 @@ fun CounterScreen(
     onAddClicked: (String) -> Unit = {},
 ) {
     val savedItems by myAppViewModel.uiState.collectAsState()
-    var itemSet by remember {
-        mutableStateOf(savedItems.itemNameSet)
-    }
-    var itemName by remember { mutableStateOf("") }
     var newItemName by remember { mutableStateOf("") }
 
     Column(
@@ -92,7 +86,7 @@ fun CounterScreen(
                     .padding(horizontal = 10.dp, vertical = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                var countValue = myAppViewModel.loadCountValue(itemName).collectAsState(initial = 0).value
+                val countValue = myAppViewModel.loadCountValue(itemName).collectAsState(initial = 0).value
                 IconButton(onClick = { onDeleteClicked(itemName) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.outline_cancel_24),
