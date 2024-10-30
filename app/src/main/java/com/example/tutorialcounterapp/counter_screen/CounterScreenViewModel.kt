@@ -11,6 +11,7 @@ import com.example.tutorialcounterapp.data.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -62,12 +63,6 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
         return countValue
     }
 
-    fun renameItem(itemName: String, newItemName: String){
-        viewModelScope.launch {
-            userRepository.renameItem(itemName, newItemName)
-        }
-    }
-
     fun addItem(itemName: String) {
         viewModelScope.launch {
             if(itemName != "") {
@@ -84,5 +79,17 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
         }
     }
 
+    fun increaseCount(itemName: String, countValue: Int){
+        viewModelScope.launch {
+            val newCountValue = countValue + 1
+            saveCountValue(itemName, newCountValue)
+        }
+    }
 
+    fun decreaseCount(itemName: String, countValue: Int){
+        viewModelScope.launch {
+            val newCountValue = countValue - 1
+            saveCountValue(itemName, newCountValue)
+        }
+    }
 }

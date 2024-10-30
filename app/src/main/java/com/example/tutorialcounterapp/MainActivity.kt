@@ -33,8 +33,8 @@ class MainActivity : ComponentActivity() {
                                 onSettingClicked = { navController.navigate(route = "Setting") },
                                 onAddClicked = {itemName -> viewModel.addItem(itemName)},
                                 onDeleteClicked = { itemName -> viewModel.deleteItem(itemName) },
-                                onDecrementClicked = { itemName -> },
-                                onIncrementClicked = { itemName -> },
+                                onDecrementClicked = { itemName, countValue -> viewModel.decreaseCount(itemName, countValue)},
+                                onIncrementClicked = { itemName, countValue -> viewModel.increaseCount(itemName, countValue)},
                             )
                         }
                         composable("Setting") { SettingScreen()}

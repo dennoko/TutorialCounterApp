@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,8 +42,8 @@ fun CounterScreen(
     myAppViewModel: CounterScreenViewModel = viewModel(factory = CounterScreenViewModel.Factory),
     onSettingClicked: () -> Unit = {},
     onDeleteClicked: (String) -> Unit = {},
-    onDecrementClicked: (String) -> Unit = {},
-    onIncrementClicked: (String) -> Unit = {},
+    onDecrementClicked: (String,Int) -> Unit = {_,_->},
+    onIncrementClicked: (String,Int) -> Unit = {_,_->},
     onAddClicked: (String) -> Unit = {},
 ) {
     val savedItems by myAppViewModel.uiState.collectAsState()
@@ -90,6 +92,7 @@ fun CounterScreen(
                     .padding(horizontal = 10.dp, vertical = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                var countValue = myAppViewModel.loadCountValue(itemName).collectAsState(initial = 0).value
                 IconButton(onClick = { onDeleteClicked(itemName) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.outline_cancel_24),
@@ -103,7 +106,7 @@ fun CounterScreen(
                     modifier = Modifier.weight(1f)
                 )
 
-                IconButton(onClick = { onDecrementClicked(itemName) }) {
+                IconButton(onClick = { onDecrementClicked(itemName,countValue) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.outline_arrow_drop_down_24),
                         contentDescription = null,
@@ -112,12 +115,13 @@ fun CounterScreen(
                 }
 
                 Text(
-                    text = "",
+                    text = countValue.toString(),
                     fontSize = 28.sp,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.width(48.dp),
+                    textAlign = TextAlign.End
                 )
 
-                IconButton(onClick = { onIncrementClicked(itemName) }) {
+                IconButton(onClick = { onIncrementClicked(itemName,countValue) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.outline_arrow_drop_up_24),
                         contentDescription = null,
