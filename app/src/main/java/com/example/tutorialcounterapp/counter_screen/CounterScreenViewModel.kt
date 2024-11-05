@@ -1,6 +1,5 @@
 package com.example.tutorialcounterapp.counter_screen
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -60,5 +59,35 @@ class CounterScreenViewModel(private val userRepository: UserRepository): ViewMo
             countValue = userRepository.loadCountValue(itemName)
         }
         return countValue
+    }
+
+    fun addItem(itemName: String) {
+        viewModelScope.launch {
+            if(itemName != "") {
+                val newItemSet = uiState.value.itemNameSet + itemName
+                saveItems(newItemSet)
+            }
+        }
+    }
+
+    fun deleteItem(itemName: String){
+        viewModelScope.launch {
+            val newItemSet = uiState.value.itemNameSet - itemName
+            saveItems(newItemSet)
+        }
+    }
+
+    fun increaseCount(itemName: String, countValue: Int){
+        viewModelScope.launch {
+            val newCountValue = countValue + 1
+            saveCountValue(itemName, newCountValue)
+        }
+    }
+
+    fun decreaseCount(itemName: String, countValue: Int){
+        viewModelScope.launch {
+            val newCountValue = countValue - 1
+            saveCountValue(itemName, newCountValue)
+        }
     }
 }

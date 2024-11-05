@@ -1,21 +1,22 @@
 package com.example.tutorialcounterapp.counter_screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,18 +39,20 @@ fun CounterScreen(
     modifier: Modifier = Modifier,
     myAppViewModel: CounterScreenViewModel = viewModel(factory = CounterScreenViewModel.Factory),
     onSettingClicked: () -> Unit = {},
-    onDeleteClicked: () -> Unit = {},
-    onDecrementClicked: () -> Unit = {},
-    onIncrementClicked: () -> Unit = {},
-    onAddClicked: () -> Unit = {},
+    onDeleteClicked: (String) -> Unit = {},
+    onDecrementClicked: (String,Int) -> Unit = {_,_->},
+    onIncrementClicked: (String,Int) -> Unit = {_,_->},
+    onAddClicked: (String) -> Unit = {},
 ) {
     val savedItems by myAppViewModel.uiState.collectAsState()
+    var newItemName by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val itemNames = savedItems.itemNameSet.toList()
         Row(
             modifier = Modifier
                 .background(Color.LightGray.copy(alpha = 0.2f))
@@ -75,78 +79,84 @@ fun CounterScreen(
             )
         }
 
+        itemNames.forEach { itemName ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 15.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val countValue = myAppViewModel.loadCountValue(itemName).collectAsState(initial = 0).value
+                IconButton(onClick = { onDeleteClicked(itemName) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_cancel_24),
+                        contentDescription = null
+                    )
+                }
+
+                Text(
+                    text = itemName,
+                    fontSize = 28.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                IconButton(onClick = { onDecrementClicked(itemName,countValue) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_arrow_drop_down_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+
+                Text(
+                    text = countValue.toString(),
+                    fontSize = 28.sp,
+                    modifier = Modifier.width(48.dp),
+                    textAlign = TextAlign.End
+                )
+
+                IconButton(onClick = { onIncrementClicked(itemName,countValue) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_arrow_drop_up_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp, vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
-        ){
-            IconButton(onClick = { onDeleteClicked() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_cancel_24),
-                    contentDescription = null
-                )
-            }
-
-            Box(
-                modifier = Modifier.weight(2f)
-            ){
-                var text by remember { mutableStateOf(savedItems.itemNameSet.firstOrNull() ?:"") }
-                var itemSet by remember {
-                    mutableStateOf(savedItems.itemNameSet)
-                }
-                LaunchedEffect(savedItems.itemNameSet) {
-                    text = savedItems.itemNameSet.firstOrNull() ?: ""
-                }
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = {
-                        text = it
-                        itemSet = setOf(it)
-                        myAppViewModel.saveItems(itemSet)},
-                    modifier = Modifier.padding(20.dp)
-                )
-            }
-
-            IconButton(onClick = { onDecrementClicked() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_arrow_drop_down_24),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            }
-
-            Box(
-                modifier = Modifier.weight(1f)
-            ){
-                val text by remember { mutableStateOf("") }
-                Text(
-                    text = text,
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .size(56.dp)
-                        .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
-                )
-            }
-
-            IconButton(onClick = { onIncrementClicked() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_arrow_drop_up_24),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp)
-                )
-            }
-        }
-
-        IconButton(onClick = { onAddClicked() }) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_add_circle_outline_24),
-                contentDescription = null,
-                modifier = Modifier.size(72.dp)
+        ) {
+            OutlinedTextField(
+                value = newItemName,
+                onValueChange = {
+                    newItemName = it
+                },
+                modifier = Modifier.weight(4f)
             )
+            
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Button(
+                onClick = {
+                    onAddClicked(newItemName)
+                    newItemName = ""
+                          },
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(10.dp)
+                ) {
+                Text(
+                    text = "Add"
+                )
+            }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
